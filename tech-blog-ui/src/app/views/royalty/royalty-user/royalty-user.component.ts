@@ -6,6 +6,7 @@ import {
   AdminApiRoyaltyApiClient,
   RoyaltyReportByUserDto,
 } from 'src/app/api/admin-api.service.generated';
+import { MessageConstants } from 'src/app/shared/constants/messages.constants';
 import { AlertService } from 'src/app/shared/services/alert.service';
 
 @Component({
@@ -56,7 +57,28 @@ export class RoyaltyUserComponent implements OnInit, OnDestroy {
     this.toggleBlockUI(true);
   }
 
-  payForUser(userId) {}
+  payForUser(userId) {
+    this.confirmationService.confirm({
+      message: 'Bạn có chắc chắn muốn thanh toán ?',
+      accept: () => {
+        this.payConfirm(userId);
+      },
+    });
+  }
+
+  payConfirm(id: string) {
+    this.toggleBlockUI(true);
+    this.royaltyApi
+      .payRoyalty(id)
+      .pipe(takeUntil(this.ngUnsubcribe))
+      .subscribe({
+        next: () => {
+          this.alertService.showSuccess(MessageConstants.UPDATED_OK_MSG);
+          this.loadData();
+        },
+        complete: () => this.toggleBlockUI(false),
+      });
+  }
 
   private toggleBlockUI(enabled: boolean) {
     if (enabled) {
