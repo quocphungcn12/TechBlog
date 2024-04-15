@@ -59,6 +59,11 @@ namespace TechBlog.Data.Repositories
             return await _mapper.ProjectTo<PostInListDto>(query).ToListAsync();
         }
 
+        public async Task<bool> HasPost(Guid seriesId)
+        {
+            return await _context.PostInSeries.AnyAsync(x => x.SeriesId == seriesId);
+        }
+
         public async Task<bool> IsPostInSeries(Guid seriesId, Guid postId)
         {
             return await _context.PostInSeries.AnyAsync(x=>x.PostId == postId && x.SeriesId == seriesId);

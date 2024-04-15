@@ -145,12 +145,12 @@ export class UserComponent implements OnInit, OnDestroy {
     const dynamicComponent = dialogRef?.instance as DynamicDialogComponent;
     const ariaLabelledBy = dynamicComponent.getAriaLabelledBy();
     dynamicComponent.getAriaLabelledBy = () => ariaLabelledBy;
-    ref.onClose.subscribe((result: boolean) => {
-      console.log(result);
-      if (result) {
+    ref.onClose.subscribe({
+      next: () => {
         this.alertService.showSuccess(MessageConstants.ROLE_ASSIGN_SUCCESS_MSG);
         this.loadData();
-      }
+      },
+      error: () => this.alertService.showError(MessageConstants.HAVE_ERRORS),
     });
   }
   changeEmail(id: string): void {

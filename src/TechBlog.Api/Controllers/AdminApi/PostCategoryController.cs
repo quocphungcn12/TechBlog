@@ -45,6 +45,7 @@ namespace TechBlog.Api.Controllers.AdminApi
             {
                 var post = await _unitOfWork.PostCategory.GetByIdAsync(id);
                 if (post is null) return NotFound();
+                if (await _unitOfWork.PostCategory.HasPost(id)) return BadRequest("Danh mục đang chứa bài viết, không thể xóa");
                 _unitOfWork.PostCategory.Remove(post);
             }
             var result = await _unitOfWork.CompleteAsync();

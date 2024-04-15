@@ -171,6 +171,9 @@ export class UserDetailComponent implements OnInit, OnDestroy {
       },
     ],
     phoneNumber: [{ type: 'required', message: 'Bạn phải nhập số điện thoại' }],
+    royaltyAmountPerPost: [
+      { type: 'required', message: 'Bạn phải nhập nhuận bút' },
+    ],
   };
 
   buildForm(): void {
@@ -213,7 +216,8 @@ export class UserDetailComponent implements OnInit, OnDestroy {
       avatar: new FormControl(this.selectEntity.avatar || null),
       isActive: new FormControl(this.selectEntity.isActive || false),
       royaltyAmountPerPost: new FormControl(
-        this.selectEntity.royaltyAmountPerPost
+        this.selectEntity.royaltyAmountPerPost || 0,
+        Validators.required
       ),
     });
   }

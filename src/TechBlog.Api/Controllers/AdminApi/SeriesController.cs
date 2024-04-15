@@ -75,6 +75,7 @@ namespace TechBlog.Api.Controllers.AdminApi
             {
                 var series = await _unitOfWork.Series.GetByIdAsync(id);
                 if (series is null) return NotFound();
+                if (await _unitOfWork.Series.HasPost(id)) return BadRequest("Loạt bài đang chứa bài viết, không thể xóa");
                 _unitOfWork.Series.Remove(series);
             }
             return await _unitOfWork.CompleteAsync() > 0 ? Ok() : BadRequest();

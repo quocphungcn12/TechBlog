@@ -44,7 +44,6 @@ export class RoleAssignComponent implements OnInit, OnDestroy {
         next: (response: any) => {
           let roles = response.roles as RoleDto[];
           roles.forEach((e) => this.availableRoles.push(e.name));
-          console.log(this.availableRoles);
 
           this.loadDetail(this.config.data?.id);
         },

@@ -8,16 +8,18 @@ using TechBlog.Api.Fillters;
 using TechBlog.Core.Domain.Identity;
 using TechBlog.Core.Models;
 using TechBlog.Core.Models.System;
+using TechBlog.Core.SeedWorks;
 using TechBlog.Core.SeedWorks.Constants;
 
 namespace TechBlog.Api.Controllers.AdminApi
 {
     [Route("api/admin/[controller]")]
     [ApiController]
-    public class UserController(IMapper mapper, UserManager<AppUser> userManager) : ControllerBase
+    public class UserController(IMapper mapper, UserManager<AppUser> userManager, IUnitOfWork unitOfWork) : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager = userManager;
         private readonly IMapper _mapper = mapper;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         [HttpGet("{id}")]
         [Authorize(Permissions.Users.View)]
@@ -143,15 +145,13 @@ namespace TechBlog.Api.Controllers.AdminApi
             var user = await _userManager.FindByIdAsync(id);
             if (user is null) return NotFound();
             var currentRoles = await _userManager.GetRolesAsync(user);
-            var removedResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            await _unitOfWork.Users.RemoveUserFromRoles(user.Id, currentRoles.ToArray());
             var addedResult = await _userManager.AddToRolesAsync(user, roles);
-            if (!addedResult.Succeeded || !removedResult.Succeeded)
+            if (!addedResult.Succeeded)
             {
                 List<IdentityError> addedErrorLst = addedResult.Errors.ToList();
-                List<IdentityError> removeErrorLst = removedResult.Errors.ToList();
                 var errorList = new List<IdentityError>();
                 errorList.AddRange(addedErrorLst);
-                errorList.AddRange(removeErrorLst);
                 return BadRequest(string.Join("<br/>", errorList.Select(x => x.Description)));
             }
             return Ok();

@@ -18,6 +18,8 @@ namespace TechBlog.Data.SeedWorks
 
         public ITransactionRepository Transactions { get; private set; } = new TransactionRepository(context, mapper);
 
+        public IUserRepository Users { get; private set; } = new UserRepository(context);
+
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();

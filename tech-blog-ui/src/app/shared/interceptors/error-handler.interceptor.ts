@@ -23,6 +23,8 @@ export class GlobalHttpInterceptorService implements HttpInterceptor {
           this.alertService.showError(
             'Hệ thống có lỗi. Vui lòng liên hệ admin'
           );
+        } else if (ex.status === 400 || ex.status === 401) {
+          this.alertService.showError(ex);
         }
         throw ex;
       })
