@@ -10,4 +10,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TechBlog.Core\TechBlog.Core.csproj" />
+    <ProjectReference Include="..\TechBlog.Data\TechBlog.Data.csproj" />
+    <ProjectReference Include="..\TechBlog.Utilities\TechBlog.Utilities.csproj" />
+  </ItemGroup>
+
 </Project>

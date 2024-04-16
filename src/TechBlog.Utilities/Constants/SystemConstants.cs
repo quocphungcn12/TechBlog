@@ -23,5 +23,6 @@
             public const string AllowedOrigins = "AllowedOrigins";
         }
         public readonly static string DateCreatedField = "DateCreated";
+        public const string SystemConfig = "SystemConfig";
     }
 }
