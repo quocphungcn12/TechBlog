@@ -1,21 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using TechBlog.Core.SeedWorks;
 using TechBlog.WebApp.Models;
 
 namespace TechBlog.WebApp.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork) : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<HomeController> _logger = logger;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public HomeController(ILogger<HomeController> logger)
+        public async Task<IActionResult> Index()
         {
-            _logger = logger;
-        }
-
-        public IActionResult Index()
-        {
-            return View();
+            var viewModel = new HomeViewModel
+            {
+                LatestPosts = await _unitOfWork.Posts.GetLatestPublishPost(10)
+            };
+            return View(viewModel);
         }
 
         public IActionResult Privacy()

@@ -15,6 +15,13 @@ namespace TechBlog.Core.Models.Content
         public bool IsPaid { get; set; }
         public double RoyaltyAmount { get; set; }
         public DateTime? PaidDate { get; set; }
+        public required string CategorySlug { set; get; }
+
+        public required string CategoryName { set; get; }
+        public string? AuthorUserName { set; get; }
+        public string? AuthorName { set; get; }
+
+        public PostStatus Status { set; get; }
         public class AutoMapperPostInListDtoProfiles : Profile
         {
             public AutoMapperPostInListDtoProfiles()
