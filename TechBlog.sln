@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechBlog.Data", "src\TechBl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechBlog.WebApp", "src\TechBlog.WebApp\TechBlog.WebApp.csproj", "{72E4FD07-B883-4F4A-9D3A-BE7AAA74075C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechBlog.Utilities", "src\TechBlog.Utilities\TechBlog.Utilities.csproj", "{2F65612F-C798-450C-868A-0453CADDD241}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TechBlog.Utilities", "src\TechBlog.Utilities\TechBlog.Utilities.csproj", "{2F65612F-C798-450C-868A-0453CADDD241}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
