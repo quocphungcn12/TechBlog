@@ -15,13 +15,13 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle px-lg-3 py-3 py-lg-4" href="@UrlConsts.Posts" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Posts
-                        <ul class="dropdown-menu">
-                            @foreach (var item in Model)
-                            {
-                                <li><a class="dropdown-item" title="@item.Name" href="@string.Format(UrlConsts.PostsByCategorySlug,item.Slug)">@item.Name</a></li>
-                            }
-                        </ul>
                     </a>
+                    <ul class="dropdown-menu">
+                        @foreach (var item in Model)
+                        {
+                            <li><a class="dropdown-item" title="@item.Name" href="@string.Format(UrlConsts.PostsByCategorySlug,item.Slug)">@item.Name</a></li>
+                        }
+                    </ul>
                 </li>
                 <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="@UrlConsts.Contact">Contact</a></li>
             </ul>

@@ -184,5 +184,11 @@ namespace TechBlog.Data.Repositories
                 RowCount = totalRow
             };
         }
+
+        public async Task<PostDto> GetBySlug(string slug)
+        {
+            var post = await _context.Posts.FirstOrDefaultAsync(x=>x.Slug == slug) ?? throw new ArgumentException($"Cannot find post with slug: {slug}");
+            return _mapper.Map<PostDto>(post);
+        }
     }
 }
