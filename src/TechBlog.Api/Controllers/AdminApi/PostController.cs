@@ -5,10 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using TechBlog.Api.Extensions;
 using TechBlog.Core.Domain.Content;
 using TechBlog.Core.Domain.Identity;
+using TechBlog.Core.Helpers;
 using TechBlog.Core.Models;
 using TechBlog.Core.Models.Content;
 using TechBlog.Core.SeedWorks;
 using TechBlog.Core.SeedWorks.Constants;
+using static TechBlog.Core.SeedWorks.Constants.Permissions;
 
 namespace TechBlog.Api.Controllers.AdminApi
 {
@@ -28,7 +30,9 @@ namespace TechBlog.Api.Controllers.AdminApi
                 return BadRequest("Đã tồn tại slug");
             }
             var post = _mapper.Map<CreateUpdatePostRequest, Post>(request);
+            var postId = Guid.NewGuid();
             var category = await _unitOfWork.PostCategory.GetByIdAsync(request.CategoryId);
+            post.Id = postId;
             post.CategoryName = category.Name;
             post.CategorySlug = category.Slug;
 
@@ -37,6 +41,32 @@ namespace TechBlog.Api.Controllers.AdminApi
             post.AuthorUserId = userId;
             post.AuthorName = user!.UserName;
             _unitOfWork.Posts.Add(post);
+
+            // process tag
+            if (request.Tags != null && request.Tags.Length > 0)
+            {
+                foreach (var tagName in request.Tags)
+                {
+                    var tagSlug = TextHelper.ToUnsignedString(tagName);
+                    var tag = await _unitOfWork.Tags.GetBySlug(tagSlug);
+                    Guid tagId;
+                    if (tag is null)
+                    {
+                        tagId = Guid.NewGuid();
+                        _unitOfWork.Tags.Add(new Tag
+                        {
+                            Id = tagId,
+                            Name = tagName,
+                            Slug = tagSlug
+                        });
+                    }
+                    else
+                    {
+                        tagId = tag.Id;
+                    }
+                    await _unitOfWork.Posts.AddTagToPost(postId, tagId);
+                }
+            }
             return await _unitOfWork.CompleteAsync() > 0 ? Ok() : BadRequest();
         }
         [HttpPut]
@@ -60,6 +90,28 @@ namespace TechBlog.Api.Controllers.AdminApi
                 post.CategorySlug = category.Slug;
             }
             _mapper.Map(request, post);
+            //Process tag
+            if (request.Tags != null && request.Tags.Length > 0)
+            {
+                foreach (var tagName in request.Tags)
+                {
+                    var tagSlug = TextHelper.ToUnsignedString(tagName);
+                    var tag = await _unitOfWork.Tags.GetBySlug(tagSlug);
+                    Guid tagId;
+                    if (tag == null)
+                    {
+                        tagId = Guid.NewGuid();
+                        _unitOfWork.Tags.Add(new Tag() { Id = tagId, Name = tagName, Slug = tagSlug });
+
+                    }
+                    else
+                    {
+                        tagId = tag.Id;
+                    }
+                    await _unitOfWork.Posts.AddTagToPost(id, tagId);
+
+                }
+            }
             await _unitOfWork.CompleteAsync();
             return Ok();
         }
@@ -152,6 +204,22 @@ namespace TechBlog.Api.Controllers.AdminApi
         {
             var logs = await _unitOfWork.Posts.GetActivityLogs(id);
             return Ok(logs);
+        }
+
+        [HttpGet("tags")]
+        [Authorize(Posts.View)]
+        public async Task<ActionResult<List<string>>> GetAllTags()
+        {
+            var logs = await _unitOfWork.Posts.GetAllTags();
+            return Ok(logs);
+        }
+
+        [HttpGet("tags/{postId}")]
+        [Authorize(Posts.View)]
+        public async Task<ActionResult<List<string>>> GetPostTags(Guid postId)
+        {
+            var tagNames = await _unitOfWork.Posts.GetTagsByPostId(postId);
+            return Ok(tagNames);
         }
     }
 }

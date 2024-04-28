@@ -20,6 +20,8 @@ namespace TechBlog.Data.SeedWorks
 
         public IUserRepository Users { get; private set; } = new UserRepository(context);
 
+        public ITagRepository Tags { get; private set; } = new TagRepository(context, mapper);
+
         public async Task<int> CompleteAsync()
         {
             return await _context.SaveChangesAsync();

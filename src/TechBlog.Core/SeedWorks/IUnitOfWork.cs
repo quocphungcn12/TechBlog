@@ -10,5 +10,6 @@ namespace TechBlog.Core.SeedWorks
         ITransactionRepository Transactions { get; }
         Task<int> CompleteAsync();
         IUserRepository Users { get; }
+        ITagRepository Tags { get; }
     }
 }
