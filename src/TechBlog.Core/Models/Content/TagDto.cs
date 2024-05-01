@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using TechBlog.Core.Domain.Content;
 
 namespace TechBlog.Core.Models.Content
 {

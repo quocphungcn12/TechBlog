@@ -102,14 +102,12 @@ namespace TechBlog.Api.Controllers.AdminApi
                     {
                         tagId = Guid.NewGuid();
                         _unitOfWork.Tags.Add(new Tag() { Id = tagId, Name = tagName, Slug = tagSlug });
-
                     }
                     else
                     {
                         tagId = tag.Id;
                     }
                     await _unitOfWork.Posts.AddTagToPost(id, tagId);
-
                 }
             }
             await _unitOfWork.CompleteAsync();
@@ -117,7 +115,7 @@ namespace TechBlog.Api.Controllers.AdminApi
         }
 
         [HttpDelete]
-        [Authorize(Permissions.Posts.Delete)]
+        [Authorize(Posts.Delete)]
         public async Task<IActionResult> DeletePosts([FromQuery] Guid[] ids)
         {
             foreach (var id in ids)
@@ -134,7 +132,7 @@ namespace TechBlog.Api.Controllers.AdminApi
         }
         [HttpGet]
         [Route("{id}")]
-        [Authorize(Permissions.Posts.View)]
+        [Authorize(Posts.View)]
         public async Task<ActionResult<PostDto>> GetPostById(Guid id)
         {
             var post = await _unitOfWork.Posts.GetByIdAsync(id);

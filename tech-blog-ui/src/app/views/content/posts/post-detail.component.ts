@@ -33,6 +33,10 @@ export class PostDetailComponent implements OnInit, OnDestroy {
 
   selectedEntity = {} as PostDto;
 
+  tags: string[] | undefined;
+  filteredTags: string[] | undefined;
+  postTags: string[];
+
   constructor(
     private ref: DynamicDialogRef,
     private fb: FormBuilder,
@@ -52,10 +56,12 @@ export class PostDetailComponent implements OnInit, OnDestroy {
     this.buildForm();
     //Load data to form
     const categories = this.postCategoryApiClient.getAllPostCategory();
+    var tags = this.postApiClient.getAllTags();
 
     this.toggleBlockUI(true);
     forkJoin({
       categories,
+      tags,
     })
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe({
@@ -70,7 +76,12 @@ export class PostDetailComponent implements OnInit, OnDestroy {
           });
           this.postCate = this.postCategories;
           if (!this.utilService.isEmpty(this.config.data?.id)) {
-            this.loadFormDetails(this.config.data.id);
+            this.postApiClient
+              .getPostTags(this.config.data.id)
+              .subscribe((result) => {
+                (this.postTags = result),
+                  this.loadFormDetails(this.config.data.id);
+              });
           } else {
             this.toggleBlockUI(false);
           }
